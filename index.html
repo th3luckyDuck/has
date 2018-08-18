@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+
+<meta name="robots" content="noindex">
+
+<head>
+  <meta name="description" content="Hide and Seek by Ducky V0.1.7">
+  <title>Hide and Seek</title>
+  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  <script src="https://sdk.altvr.com/libs/altspace.js/2.9.0/altspace.js"></script>
+  <script src="https://tweenjs.github.io/tween.js/src/Tween.js"></script>
+  <script src="https://cdn.rawgit.com/oOblik/AltspaceVR-Native-Components-JS/0.1.2/js/JSNativeComponents.js"></script>
+</head>
+<body>
+
+  <a-scene altspace="fullspace: true" vr-mode-ui="enabled: false" sync-system='app: has; author: ducky'>
+
+    <a-assets>
+      <a-mixin id="flash" obj-model="obj:flash2.obj" material="color: black" collapse-model scale="1 1 1"></a-mixin>
+      <a-mixin id="flashhand" rotation="0 0 0" n-skeleton-parent="part: hand; side: right; index: 0" position="0 -0.5 -0.3" altspace-cursor-collider="enabled: false" sync sync-n-skeleton-parent></a-mixin>
+      <a-mixin id="light" obj-model="obj:light.obj" material="color: teal; opacity:0.1" collapse-model scale="1 1 1"></a-mixin>
+      <a-mixin id="lighthand" rotation="0 0 0" n-skeleton-parent="part: hand; side: right; index: 0" position="0 -0.5 -0.3" altspace-cursor-collider="enabled: false" sync sync-n-skeleton-parent></a-mixin>
+      <a-mixin id="tele" n-portal="targetEntity: #outpoint" collapse-model scale="0.01 1 0.01"></a-mixin>
+      <a-mixin id="telehand" rotation="90 0 0" n-skeleton-parent="part: hand; side: right; index: 0" position="0 0.15 -4.3" altspace-cursor-collider="enabled: false" sync sync-n-skeleton-parent></a-mixin>
+    </a-assets>
+
+    <a-entity id="flashhandin" geometry="primitive: box" material="color:blue" position='25 50000 25' rotation="0 0 0" scale="0.15 0.15 0.03" instantiator="on: click; group: fg; mixin: flash flashhand;" altspace-cursor-collider="enabled: true"></a-entity>
+    <a-entity id="lighthandin" geometry="primitive: box" material="color:green" position='25 50000 25' rotation="0 0 0" scale="0.15 0.15 0.03" instantiator="on: click; group: lg; mixin: light lighthand;" altspace-cursor-collider="enabled: true"></a-entity>
+    <a-entity id="telehandin" geometry="primitive: box" material="color:green" position='25 50000 25' rotation="0 0 0" scale="0.15 0.15 0.03" instantiator="on: click; group: tg; mixin: tele telehand;" altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="tag" position="0 15 0" rotation="0 -90 0"></a-entity>
+    <a-entity id="play" position="0 1 0" rotation="0 -90 0"></a-entity>
+    <a-entity id="outhold" position="1100 0 1100" rotation="0 0 0"></a-entity>
+
+    <a-entity id="lobbytp" position="0 -5000 0" scale="1 1 1" n-portal="targetEntity: #tag" n-cockpit-parent></a-entity>
+    <a-entity id="playtp" position="0 -5000 0" scale="1 1 1" n-portal="targetEntity: #play" n-cockpit-parent></a-entity>
+
+    <!--a-entity id="fog1" geometry="primitive: sphere" material="color: darkgrey; opacity: 0.1" position='0 0 0' rotation="0 0 0" scale="-10 -5 -5" n-cockpit-parent altspace-cursor-collider="enabled: false"></a-entity>
+    <a-entity id="fog2" geometry="primitive: sphere" material="color: darkgrey; opacity: 0.1" position='0 0 0' rotation="0 0 0" scale="-20 -10 -10" n-cockpit-parent altspace-cursor-collider="enabled: false"></a-entity>
+    <a-entity id="fog3" geometry="primitive: sphere" material="color: darkgrey; opacity: 0.1" position='0 0 0' rotation="0 0 0" scale="-30 -15 -15" n-cockpit-parent altspace-cursor-collider="enabled: false"></a-entity>
+    <a-entity id="fog4" geometry="primitive: sphere" material="color: darkgrey; opacity: 0.1" position='0 0 0' rotation="0 0 0" scale="-40 -20 -20" n-cockpit-parent altspace-cursor-collider="enabled: false"></a-entity>
+    <a-entity id="fog5" geometry="primitive: sphere" material="color: darkgrey; opacity: 0.1" position='0 0 0' rotation="0 0 0" scale="-50 -25 -25" n-cockpit-parent altspace-cursor-collider="enabled: false"></a-entity-->
+
+   <a-entity id="console" position="0.8 -0.6 0" rotation="0 0 0" n-cockpit-parent>
+
+    <a-entity id="menu1" n-text="fontSize: 3; text:Hide N Seek by Ducky V1.7" position='-0.81 0.16 -1.60' rotation="-25 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+
+    <a-entity geometry="primitive: box" material="color: black" position='-0.81 0.075 -1.595' rotation="-25 0 0" scale="0.8 0.25 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="blocker" geometry="primitive: box" material="src:block.jpg" position='-0.81 -5000.09 -1.5' rotation="-25 0 0" scale="0.8 0.25 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button1" geometry="primitive: box" material="src:hide.jpg" position='-1.1 0.05 -1.55' rotation="-25 0 0" scale="0.15 0.15 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button2" geometry="primitive: box" material="src:seek.jpg" position='-0.91 0.05 -1.55' rotation="-25 0 0" scale="0.15 0.15 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button3" geometry="primitive: box" material="src:out.jpg" position='-0.72 0.05 -1.55' rotation="-25 0 0" scale="0.15 0.15 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button4" geometry="primitive: box" material="src:ready.jpg" position='-0.52 0.05 -1.55' rotation="-25 0 0" scale="0.15 0.15 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+    
+     <a-entity geometry="primitive: box" material="color: black" position='-0.81 0.3 -1.62' rotation="0 0 0" scale="0.8 0.25 0.03" n-cockpit-parent altspace-cursor-collider="enabled: false"></a-entity>
+    <a-entity id="name" n-text="fontSize: 7; text:" position='-0.81 0.59 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+    <a-entity id="role" n-text="fontSize: 5; text:Pick Hide, Seek, or Out" position='-0.81 0.50 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+    <a-entity id="redtext" n-text="fontSize: 3; text:Seekers: 0" position='-0.81 0.4.5 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+    <a-entity id="bluetext" n-text="fontSize: 3; text:Hiders: 0" position='-0.81 0.35 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+    <a-entity id="totaltext" n-text="fontSize: 3; text:Total Players: 0" position='-0.81 0.3 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+    <a-entity id="readytext" n-text="fontSize: 3; text:Ready to Play: 0" position='-0.81 0.25 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+    <!--a-entity id="guesttext" n-text="fontSize: 3; text:Spectating: 0" position='-0.81 0.3 -1.60' rotation="0 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity-->
+
+   </a-entity>
+
+
+   <a-entity id="modconsole" position="0.8 -5000.9 0.1" rotation="0 0 0" n-cockpit-parent>
+
+    <a-entity id="menu2" n-text="fontSize: 3; text:Mod Panel" position='-0.81 0.16 -1.60' rotation="-25 0 0" scale="0.15 0.15 0.05" n-cockpit-parent></a-entity>
+
+    <a-entity geometry="primitive: box" material="color: black" position='-0.81 0.075 -1.595' rotation="-25 0 0" scale="0.8 0.25 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button5" geometry="primitive: box" material="src:reset.jpg" position='-1.1 0.05 -1.55' rotation="-25 0 0" scale="0.15 0.15 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button6" geometry="primitive: box" material="src:start.jpg" position='-0.91 0.05 -1.55' rotation="-25 0 0" scale="0.15 0.15 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button7" geometry="primitive: box" material="src:seekup.jpg" position='-0.72 0.09 -1.57' rotation="-25 0 0" scale="0.10 0.07 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button8" geometry="primitive: box" material="src:seekdown.jpg" position='-0.72 0.01 -1.54' rotation="-25 0 0" scale="0.10 0.07 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button9" geometry="primitive: box" material="src:hideup.jpg" position='-0.62 0.09 -1.57' rotation="-25 0 0" scale="0.10 0.07 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button10" geometry="primitive: box" material="src:hidedown.jpg" position='-0.62 0.01 -1.54' rotation="-25 0 0" scale="0.10 0.07 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button11" geometry="primitive: box" material="src:readyup.jpg" position='-0.52 0.09 -1.57' rotation="-25 0 0" scale="0.10 0.07 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+
+    <a-entity id="button12" geometry="primitive: box" material="src:readydown.jpg" position='-0.52 0.01 -1.54' rotation="-25 0 0" scale="0.10 0.07 0.03" n-cockpit-parent altspace-cursor-collider="enabled: true"></a-entity>
+   </a-entity>
+
+  
+   
+
+    <a-box id="bluebox" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="guestbox" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="resetbox" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="startbox" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox2" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox2" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox2" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox3" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox3" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox3" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox4" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox4" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox4" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox5" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox5" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox5" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox6" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox6" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox6" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox7" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox7" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox7" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox8" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox8" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox8" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+
+    <a-box id="bluebox9" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="redbox9" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    <a-box id="readybox9" scale="0.1 0.1 0.1" position="5000 0 5000" sync="own-on: up" sync-transform></a-box>
+    
+
+
+    
+    <a-entity obj-model="obj:lobbyframe.obj" material="color: black; opacity:1" scale="3 3 3" position=" 0 15 0" n-mesh-collider="type: environment; convex: false"></a-entity>
+    <a-entity id="glass" obj-model="obj:lobbyglass.obj" material="color: grey; opacity:0.01" scale="3 3 3" position=" 0 15 0" n-mesh-collider="type: environment; convex: false"></a-entity>
+
+    
+    <a-entity id="outbox4" obj-model="obj:lobbyglass.obj" material="color: green" scale="3 3 3" position="0 10000 0" n-mesh-collider="type: hologram; convex: false" altspace-cursor-collider="enabled: true"></a-entity>
+    <a-entity id="outpoint" obj-model="obj:lobbyglass.obj" material="color: black" scale="3.1 3.1 3.1" position="0 10000 0" n-mesh-collider="type: environment; convex: false" altspace-cursor-collider="enabled: false">
+      <a-animation attribute="rotation" dur="15000" delay="0" easing="linear" fill="forwards" repeat="indefinite" to="0 -360 0"></a-animation>
+      <a-entity n-text="fontSize: 3; text:You're Out, Click Anywhere" position='0 0.5 -2' rotation="0 0 0" scale="0.5 0.5 0.5" altspace-cursor-collider="enabled: false"></a-entity>
+      <a-entity n-text="fontSize: 3; text:You're Out, Click Anywhere" position='0 0.5 2' rotation="0 180 0" scale="0.5 0.5 0.5" altspace-cursor-collider="enabled: false"></a-entity>
+      <a-entity n-text="fontSize: 3; text:You're Out, Click Anywhere" position='2 0.5 0' rotation="0 270 0" scale="0.5 0.5 0.5" altspace-cursor-collider="enabled: false"></a-entity>
+      <a-entity n-text="fontSize: 3; text:You're Out, Click Anywhere" position='-2 0.5 0' rotation="0 90 0" scale="0.5 0.5 0.5" altspace-cursor-collider="enabled: false"></a-entity>
+    </a-entity>
+
+    <a-entity id="sf1" position="0 15 0" n-sound="src: 1.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+    <a-entity id="sf2" position="0 15 0" n-sound="src: 2.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+    <a-entity id="sf3" position="0 15 0" n-sound="src: 3.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+    <a-entity id="sf4" position="0 15 0" n-sound="src: 4.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+    <a-entity id="sf5" position="0 15 0" n-sound="src: 5.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+    <a-entity id="sf6" position="0 15 0" n-sound="src: draw.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+    <a-entity id="sf7" position="0 15 0" n-sound="src: gameover.wav; loop: false; autoplay: false; volume: 0.2; rolloff: cosine; minDistance: 1; maxDistance: 300"></a-entity>
+
+
+
+    <a-entity id="b1s" position="0 0 0" n-sound="src: b1.wav; volume: 0.2; on: b1; minDistance: 1000; maxDistance: 3000" n-skeleton-parent="part: spine;"></a-entity>
+    <a-entity id="b2s" position="0 0 0" n-sound="src: b2.wav; volume: 0.2; on: b1; minDistance: 1000; maxDistance: 3000" n-skeleton-parent="part: spine;"></a-entity>
+
+
+    <!--a-entity id="players" position="0 5 0" scale="5 5 5" n-text="text: 0;" n-billboard></a-entity-->
+    <!--a-entity id="test" position="0 2.5 0" scale="5 5 5" n-text="text: 0;" n-billboard></a-entity-->
+
+
+  </a-scene>
+
+  <script>
+
+
+    var isnothing = true
+    var isguest = false
+    var isred = false
+    var isblue = false
+    var isit = false
+    var isnotit = false
+    var ready = false
+    var gamestart = false;
+    var gamestartdelay = false;
+    var buttondelay = false;
+    var change = 0;
+    var username = 0;
+    var gamestarting = false;    
+    var gamenumber = 0;
+    var gameending = false;
+
+    var redpick = [
+            document.querySelector('#redbox'),
+            document.querySelector('#redbox2'),
+            document.querySelector('#redbox3'),
+            document.querySelector('#redbox4'),
+            document.querySelector('#redbox5'),
+            document.querySelector('#redbox6'),
+            document.querySelector('#redbox7'),
+            document.querySelector('#redbox8'),
+            document.querySelector('#redbox9')
+            ];
+  var myredpick = redpick[Math.floor(Math.random()*redpick.length)];
+
+  var bluepick = [
+            document.querySelector('#bluebox'),
+            document.querySelector('#bluebox2'),
+            document.querySelector('#bluebox3'),
+            document.querySelector('#bluebox4'),
+            document.querySelector('#bluebox5'),
+            document.querySelector('#bluebox6'),
+            document.querySelector('#bluebox7'),
+            document.querySelector('#bluebox8'),
+            document.querySelector('#bluebox9')
+            ];
+  var mybluepick = bluepick[Math.floor(Math.random()*bluepick.length)];
+
+  var readypick = [
+            document.querySelector('#readybox'),
+            document.querySelector('#readybox2'),
+            document.querySelector('#readybox3'),
+            document.querySelector('#readybox4'),
+            document.querySelector('#readybox5'),
+            document.querySelector('#readybox6'),
+            document.querySelector('#readybox7'),
+            document.querySelector('#readybox8'),
+            document.querySelector('#readybox9')
+            ];
+  var myreadypick = readypick[Math.floor(Math.random()*readypick.length)];
+  var mybluecount = mybluepick.getAttribute('position').y;;
+  var myredcount = myredpick.getAttribute('position').y;;
+  var myreadycount = myreadypick.getAttribute('position').y;;
+    
+
+    var guestcount = document.querySelector('#guestbox').getAttribute('position').y;
+    var redcount = document.querySelector('#redbox').getAttribute('position').y + document.querySelector('#redbox2').getAttribute('position').y + document.querySelector('#redbox3').getAttribute('position').y + document.querySelector('#redbox4').getAttribute('position').y + document.querySelector('#redbox5').getAttribute('position').y + document.querySelector('#redbox6').getAttribute('position').y + document.querySelector('#redbox7').getAttribute('position').y + document.querySelector('#redbox8').getAttribute('position').y + document.querySelector('#redbox9').getAttribute('position').y;
+    var bluecount = document.querySelector('#bluebox').getAttribute('position').y + document.querySelector('#bluebox2').getAttribute('position').y + document.querySelector('#bluebox3').getAttribute('position').y + document.querySelector('#bluebox4').getAttribute('position').y + document.querySelector('#bluebox5').getAttribute('position').y + document.querySelector('#bluebox6').getAttribute('position').y + document.querySelector('#bluebox7').getAttribute('position').y + document.querySelector('#bluebox8').getAttribute('position').y + document.querySelector('#bluebox9').getAttribute('position').y;
+    var resetcount = document.querySelector('#resetbox').getAttribute('position').y;
+    var startcount = document.querySelector('#startbox').getAttribute('position').y;
+    var readycount = document.querySelector('#readybox').getAttribute('position').y + document.querySelector('#readybox2').getAttribute('position').y + document.querySelector('#readybox3').getAttribute('position').y + document.querySelector('#readybox4').getAttribute('position').y + document.querySelector('#readybox5').getAttribute('position').y + document.querySelector('#readybox6').getAttribute('position').y + document.querySelector('#readybox7').getAttribute('position').y + document.querySelector('#readybox8').getAttribute('position').y + document.querySelector('#readybox9').getAttribute('position').y;
+    var totalplayers = bluecount + redcount
+
+    enter();
+    function enter() { 
+          document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: 0, z: 0});
+          setTimeout(function() {document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 500);
+         
+      };
+
+
+      
+
+  
+
+    altspace.getUser().then(function(user){
+          document.querySelector('#name').setAttribute('n-text', {text: user.displayName });
+          username = user.displayName;
+          });
+    altspace.getUser().then(function(user){
+        if (user.isModerator){
+          document.querySelector('#modconsole').setAttribute('position', '0.8 -0.9 0.1');
+          }
+          });
+
+    document.querySelector('#button1').addEventListener('mousedown', function() {
+          //document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: 0.09, z: -1.5});
+          //setTimeout(function() {document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: -5000.09, z: -1.5});}, 2000);
+          document.querySelector('#b1s').components['n-sound'].playSound();
+        if (isnothing == true && gamestart == false) {
+          mybluepick.emit("up");
+          mybluepick.setAttribute('position', {x: 5000, y: mybluecount + 1, z: 5000});
+          document.querySelector('#role').setAttribute('n-text', {text: 'Click Ready' });
+          //document.querySelector('#guestbox').innerHTML = document.querySelector('#guestbox').innerHTML.toString();
+          isnothing = false;
+          isblue = true;
+          };
+          if (isguest == true && gamestart == false) {
+          document.querySelector("#guestbox").emit("up");
+          document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: guestcount - 1, z: 5000});
+          mybluepick.emit("up");
+          mybluepick.setAttribute('position', {x: 5000, y: mybluecount + 1, z: 5000});
+          document.querySelector('#role').setAttribute('n-text', {text: 'Click Ready' });
+          isblue = true;
+          isguest = false;
+          };
+          });
+    document.querySelector('#button2').addEventListener('mousedown', function() {
+          //document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: 0.09, z: -1.5});
+          //setTimeout(function() {document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: -5000.076, z: -1.5});}, 2000);
+          document.querySelector('#b1s').components['n-sound'].playSound();
+        if (isnothing == true && gamestart == false) {
+          myredpick.emit("up");
+          myredpick.setAttribute('position', {x: 5000, y: myredcount + 1, z: 5000});
+          document.querySelector('#role').setAttribute('n-text', {text: 'Click Ready' });
+          //document.querySelector("#flashhandin").click();
+         // document.querySelector("#lighthandin").click();
+         // document.querySelector("#telehandin").click();
+          isnothing = false;
+          isred = true;
+          };
+          if (isguest == true && gamestart == false) {
+          document.querySelector("#guestbox").emit("up");
+          document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: guestcount - 1, z: 5000});
+          myredpick.emit("up");
+          myredpick.setAttribute('position', {x: 5000, y: myredcount + 1, z: 5000});
+          document.querySelector('#role').setAttribute('n-text', {text: 'Click Ready' });
+         // document.querySelector("#flashhandin").click();
+         // document.querySelector("#lighthandin").click();
+          //document.querySelector("#telehandin").click();
+          isred = true;
+          isguest = false;
+          };
+          });
+    document.querySelector('#button3').addEventListener('mousedown', function() {
+          //document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: 0.09, z: -1.5});
+          //setTimeout(function() {document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: -5000.076, z: -1.5});}, 2000);
+          document.querySelector('#b1s').components['n-sound'].playSound();
+        if (isnothing == true) {
+          document.querySelector("#guestbox").emit("up");
+          document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: guestcount + 1, z: 5000});
+          isnothing = false;
+          isguest = true;
+          } else if (isblue == true) {
+          mybluepick.emit("up");
+          mybluepick.setAttribute('position', {x: 5000, y: mybluecount - 1, z: 5000});
+          document.querySelector("#guestbox").emit("up");
+          document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: guestcount + 1, z: 5000});
+          isblue = false;
+          isguest = true;
+          } else if (isred == true) {
+          myredpick.emit("up");
+          myredpick.setAttribute('position', {x: 5000, y: myredcount - 1, z: 5000});
+          document.querySelector("#guestbox").emit("up");
+          document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: guestcount + 1, z: 5000});
+          //document.querySelector("#flashhandin").click();
+         // document.querySelector("#lighthandin").click();
+         // document.querySelector("#telehandin").click();
+          isred = false;
+          isguest = true;
+          };
+          });
+    document.querySelector('#button4').addEventListener('mousedown', function() {
+          //document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: 0.09, z: -1.5});
+          //setTimeout(function() {document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: -5000.09, z: -1.5});}, 2000);
+          document.querySelector('#b1s').components['n-sound'].playSound();
+        if (ready == false && gamestart == false && isred == true) {
+          myreadypick.emit("up");
+          myreadypick.setAttribute('position', {x: 5000, y: myreadycount + 1, z: 5000});
+          ready = true;
+          document.querySelector('#role').setAttribute('n-text', {text: 'Waiting for game to start..' });
+          } else if (ready == false && gamestart == false && isblue == true) {
+          myreadypick.emit("up");
+          myreadypick.setAttribute('position', {x: 5000, y: myreadycount + 1, z: 5000});
+          ready = true;
+          document.querySelector('#role').setAttribute('n-text', {text: 'Waiting for game to start..' });
+          };
+        });
+    document.querySelector('#button5').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          if (gamestarting == false && gameending == false) {
+          document.querySelector("#resetbox").emit("up");
+          document.querySelector('#resetbox').setAttribute('position', {x: 5000, y: resetcount + 1, z: 5000});
+        }
+        });
+    document.querySelector('#button6').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          if (redcount >= 1  && gameending == false) { 
+          document.querySelector("#startbox").emit("up");
+          document.querySelector('#startbox').setAttribute('position', {x: 5000, y: startcount + 1, z: 5000});
+          }
+        });
+
+     
+    document.querySelector('#outbox4').addEventListener('mousedown', function() {
+          yourout();
+          });  
+
+    document.querySelector('#button7').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          myredpick.emit("up");
+          myredpick.setAttribute('position', {x: 5000, y: myredcount + 1, z: 5000});
+        });
+    document.querySelector('#button8').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          myredpick.emit("up");
+          myredpick.setAttribute('position', {x: 5000, y: myredcount - 1, z: 5000});
+        });  
+    document.querySelector('#button9').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          mybluepick.emit("up");
+          mybluepick.setAttribute('position', {x: 5000, y: mybluecount + 1, z: 5000});
+        });  
+    document.querySelector('#button10').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          mybluepick.emit("up");
+          mybluepick.setAttribute('position', {x: 5000, y: mybluecount - 1, z: 5000});
+        });  
+    document.querySelector('#button11').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          myreadypick.emit("up");
+          myreadypick.setAttribute('position', {x: 5000, y: myreadycount + 1, z: 5000});
+        });  
+    document.querySelector('#button12').addEventListener('mousedown', function() {
+          document.querySelector('#b1s').components['n-sound'].playSound();
+          myreadypick.emit("up");
+          myreadypick.setAttribute('position', {x: 5000, y: myreadycount - 1, z: 5000});
+        });           
+
+      function yourout() { 
+        if (isred == true) {
+          document.querySelector('#playtp').setAttribute('position', {x: 0, y: 0, z: 0});
+          setTimeout(function() {document.querySelector('#playtp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 500); 
+          } else if (isblue == true) {
+          mybluepick.emit("up");
+          mybluepick.setAttribute('position', {x: 5000, y: mybluecount - 1, z: 5000});
+          document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: 0, z: 0});
+          setTimeout(function() {document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 500);
+          isblue = false;
+          isguest = true;
+          } else {
+          document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: 0, z: 0});
+          setTimeout(function() {document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 500);
+          };
+        };
+       
+    function gamego() { 
+            gamestarting = true;
+            gamestart = true;
+            document.querySelector('#role').setAttribute('n-text', {text: 'Game is starting...' });
+            setTimeout(function() {gamestarting = false;}, 35000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 0);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 2000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 4000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 6000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 8000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 10000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 12000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 14000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 16000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 18000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 20000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 22000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 24000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 26000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 28000);
+            setTimeout(function() {document.querySelector('#b2s').components['n-sound'].playSound();}, 30000);
+            setTimeout(function() {document.querySelector('#sf5').components['n-sound'].playSound();}, 25000);
+            setTimeout(function() {document.querySelector('#sf4').components['n-sound'].playSound();}, 26000);
+            setTimeout(function() {document.querySelector('#sf3').components['n-sound'].playSound();}, 27000);
+            setTimeout(function() {document.querySelector('#sf2').components['n-sound'].playSound();}, 28000);
+            setTimeout(function() {document.querySelector('#sf1').components['n-sound'].playSound();}, 29000);
+        if (isred == true) {
+            setTimeout(function() {document.querySelector('#role').setAttribute('n-text', {text: 'Seeking...' });}, 30000);
+            setTimeout(function() {document.querySelector("#flashhandin").click();}, 30000);
+            setTimeout(function() {document.querySelector("#lighthandin").click();}, 30000);
+            setTimeout(function() {document.querySelector("#telehandin").click();}, 30000);
+            setTimeout(function() {document.querySelector('#playtp').setAttribute('position', {x: 0, y: 0, z: 0});}, 30000);
+            setTimeout(function() {document.querySelector('#playtp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 30500);
+            document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 30' });
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 25' });}, 5000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 20' });}, 10000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 15' });}, 15000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 10' });}, 20000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 5' });}, 25000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 4' });}, 26000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 3' });}, 27000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 2' });}, 28000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Joining game in 1' });}, 29000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: username });}, 30000);
+            document.querySelector('#glass').setAttribute('material', 'opacity', 0.9);
+            setTimeout(function() {document.querySelector('#glass').setAttribute('material', 'opacity', 0.01);}, 30000);
+            };
+       if (isblue == true) {
+            setTimeout(function() {document.querySelector('#role').setAttribute('n-text', {text: 'Hiding...' });}, 30000);
+            document.querySelector('#playtp').setAttribute('position', {x: 0, y: 0, z: 0});
+            setTimeout(function() {document.querySelector('#playtp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 500);
+            document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 30' });
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 25' });}, 5000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 20' });}, 10000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 15' });}, 15000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 10' });}, 20000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 5' });}, 25000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 4' });}, 26000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 3' });}, 27000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 2' });}, 28000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: 'Time left to hide: 1' });}, 29000);
+            setTimeout(function() {document.querySelector('#name').setAttribute('n-text', {text: username });}, 30000);
+            };
+       if (isguest == true) {
+          document.querySelector('#role').setAttribute('n-text', {text: 'Spectating...' });            
+            };
+       if (isnothing == true) {
+          document.querySelector('#role').setAttribute('n-text', {text: 'Spectating...' });            
+            };
+          };
+
+      function gameend() { 
+        if (isred == true) {
+            document.querySelector("#flashhandin").click();
+            document.querySelector("#lighthandin").click();
+            document.querySelector("#telehandin").click();
+            };
+          gameending = true;
+          isnothing = true;
+          isguest = false;
+          isred = false;
+          isblue = false;
+          isit = false;
+          isnotit = false;
+          ready = false;
+          gamestart = false;
+          gamestartdelay = false;
+          buttondelay = false;
+          document.querySelector("#startbox").emit("up");  
+          document.querySelector('#startbox').setAttribute('position', {x: 0, y: 0, z: 0});   
+          document.querySelector("#bluebox").emit("up");
+          document.querySelector('#bluebox').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox").emit("up");
+          document.querySelector('#redbox').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox").emit("up");
+          document.querySelector('#readybox').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox2").emit("up");
+          document.querySelector('#bluebox2').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox2").emit("up");
+          document.querySelector('#redbox2').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox2").emit("up");
+          document.querySelector('#readybox2').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox3").emit("up");
+          document.querySelector('#bluebox3').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox3").emit("up");
+          document.querySelector('#redbox3').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox3").emit("up");
+          document.querySelector('#readybox3').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox4").emit("up");
+          document.querySelector('#bluebox4').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox4").emit("up");
+          document.querySelector('#redbox4').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox4").emit("up");
+          document.querySelector('#readybox4').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox5").emit("up");
+          document.querySelector('#bluebox5').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox5").emit("up");
+          document.querySelector('#redbox5').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox5").emit("up");
+          document.querySelector('#readybox5').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox6").emit("up");
+          document.querySelector('#bluebox6').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox6").emit("up");
+          document.querySelector('#redbox6').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox6").emit("up");
+          document.querySelector('#readybox6').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox7").emit("up");
+          document.querySelector('#bluebox7').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox7").emit("up");
+          document.querySelector('#redbox7').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox7").emit("up");
+          document.querySelector('#readybox7').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox8").emit("up");
+          document.querySelector('#bluebox8').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox8").emit("up");
+          document.querySelector('#redbox8').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox8").emit("up");
+          document.querySelector('#readybox8').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#bluebox9").emit("up");
+          document.querySelector('#bluebox9').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#redbox9").emit("up");
+          document.querySelector('#redbox9').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#readybox9").emit("up");
+          document.querySelector('#readybox9').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector("#guestbox").emit("up");
+          document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: 0, z: 5000});
+          document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: 0, z: 0});
+          setTimeout(function() {document.querySelector('#lobbytp').setAttribute('position', {x: 0, y: -5000, z: 0});}, 500);
+          document.querySelector('#role').setAttribute('n-text', {text: 'Pick Hide, Seek, or Out' });
+          setTimeout(function() {gameending = false;}, 5000);                
+      };
+
+         loop();
+    function loop() {
+              
+        //if (isguest == true) {
+          //document.querySelector('#guestbox').setAttribute('position', {x: 5000, y: guestcount + 1, z: 5000});
+          //guestcount = document.querySelector('#guestbox').getAttribute('position').y;
+          //document.querySelector('#oob').click();
+        //};
+        bluecount = document.querySelector('#bluebox').getAttribute('position').y + document.querySelector('#bluebox2').getAttribute('position').y + document.querySelector('#bluebox3').getAttribute('position').y + document.querySelector('#bluebox4').getAttribute('position').y + document.querySelector('#bluebox5').getAttribute('position').y + document.querySelector('#bluebox6').getAttribute('position').y + document.querySelector('#bluebox7').getAttribute('position').y + document.querySelector('#bluebox8').getAttribute('position').y + document.querySelector('#bluebox9').getAttribute('position').y;
+        redcount = document.querySelector('#redbox').getAttribute('position').y + document.querySelector('#redbox2').getAttribute('position').y + document.querySelector('#redbox3').getAttribute('position').y + document.querySelector('#redbox4').getAttribute('position').y + document.querySelector('#redbox5').getAttribute('position').y + document.querySelector('#redbox6').getAttribute('position').y + document.querySelector('#redbox7').getAttribute('position').y + document.querySelector('#redbox8').getAttribute('position').y + document.querySelector('#redbox9').getAttribute('position').y;
+        guestcount = document.querySelector('#guestbox').getAttribute('position').y;
+        readycount = document.querySelector('#readybox').getAttribute('position').y + document.querySelector('#readybox2').getAttribute('position').y + document.querySelector('#readybox3').getAttribute('position').y + document.querySelector('#readybox4').getAttribute('position').y + document.querySelector('#readybox5').getAttribute('position').y + document.querySelector('#readybox6').getAttribute('position').y + document.querySelector('#readybox7').getAttribute('position').y + document.querySelector('#readybox8').getAttribute('position').y + document.querySelector('#readybox9').getAttribute('position').y;
+        totalplayers = bluecount + redcount;
+        document.querySelector('#redtext').setAttribute('n-text', {fontSize:4,  text: 'Seekers: ' + redcount });
+        document.querySelector('#bluetext').setAttribute('n-text', {fontSize:4,  text: 'Hiders: ' + bluecount });
+        document.querySelector('#totaltext').setAttribute('n-text', {fontSize:4,  text: 'Total Players: ' + totalplayers });
+        document.querySelector('#readytext').setAttribute('n-text', {fontSize:4,  text: 'Ready to Play: ' + readycount });
+        //document.querySelector('#guesttext').setAttribute('n-text', {fontSize:4,  text: 'Spectating: ' + guestcount });
+        resetcount = document.querySelector('#resetbox').getAttribute('position').y;
+        startcount = document.querySelector('#startbox').getAttribute('position').y;
+        mybluecount = mybluepick.getAttribute('position').y;;
+        myredcount = myredpick.getAttribute('position').y;;
+        myreadycount = myreadypick.getAttribute('position').y;;
+        if (isguest == true) {
+          document.querySelector('#role').setAttribute('n-text', {text: 'Spectating...' });
+          } else if (isblue == true) {
+          
+          } else if (isred == true) {
+          
+          };
+        if (totalplayers == readycount && totalplayers >= 2 && gamestart == false && redcount >= 1 && gamestarting == false && readycount >= 2 && gameending == false) {
+          gamego();         
+          };
+        if (bluecount <= 0 && gamestart == true && gamestarting == false) {          
+          gamestart = false;
+          setTimeout(function() {gamestartdelay = false;}, 3000);
+          document.querySelector('#sf7').components['n-sound'].playSound();
+          gameend();          
+          };
+        if (resetcount >= 1 && gamestarting == false && gameending == false) {          
+          gameend();
+          document.querySelector("#resetbox").emit("up");
+          document.querySelector('#resetbox').setAttribute('position', {x: 0, y: 0, z: 0});
+          document.querySelector('#sf6').components['n-sound'].playSound();     
+          };  
+        if (startcount >= 1 && gamestart == false && gamestarting == false && redcount >= 1 && bluecount >= 1 && gameending == false) {          
+          gamego();
+          document.querySelector("#startbox").emit("up");  
+          document.querySelector('#startbox').setAttribute('position', {x: 0, y: 0, z: 0});      
+          };    
+        };
+        setInterval(loop, 1000);
+
+       // mil();
+  //  function mil() {
+    //  if (change != document.querySelector('#guestbox').getAttribute('position').y +  document.querySelector('#redbox').getAttribute('position').y +  document.querySelector('#bluebox').getAttribute('position').y) {          
+    //      document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: 0.09, z: -1.5});
+    //      setTimeout(function() {document.querySelector('#blocker').setAttribute('position', {x: -0.81, y: -5000.09, z: -1.5});}, 2000);      
+     //     }; 
+     //     change =  document.querySelector('#guestbox').getAttribute('position').y +  document.querySelector('#redbox').getAttribute('position').y +  document.querySelector('#bluebox').getAttribute('position').y;
+     //   };
+       // setInterval(mil, 50);
+
+   
+  </script>
+
+
+
+
